@@ -50,46 +50,12 @@ public struct RaichuMacro: ExpressionMacro {
     }
 }
 
-public struct DefaultInitMacro: MemberMacro {
-    public static func expansion(
-        of node: AttributeSyntax,
-        providingMembersOf declaration: some DeclGroupSyntax,
-        conformingTo protocols: [TypeSyntax],
-        in context: some MacroExpansionContext
-    ) throws -> [DeclSyntax] {
-
-        if let structDecl = declaration.as(StructDeclSyntax.self) {
-            let members = structDecl.memberBlock.members
-            let variables = members.compactMap { $0.decl.as(VariableDeclSyntax.self) }
-            var parameters: [(name: String, type: String)] = []
-            
-            for variable in variables {
-                for binding in variable.bindings {
-                    guard let name = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text else { continue }
-                    guard let type = binding.typeAnnotation?.type.description else { continue }
-                    parameters.append((name: name, type: type))
-                }
-            }
-            
-            let initParams = parameters.map { "\($0.name): \($0.type)" }.joined(separator: ", ")
-            let initBody = parameters.map { "self.\($0.name) = \($0.name)" }.joined(separator: "\n    ")
-            
-            let initCode: DeclSyntax = """
-            public init(\(raw: initParams)) {
-                \(raw: initBody)
-            }
-            """
-            return [initCode]
-        }
-        return []
-    }
-}
-
 @main
 struct YakoSwiftPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         StringifyMacro.self,
-        DefaultInitMacro.self,
         RaichuMacro.self,
+        DebugNodeContextMacro.self,
+        ContainerNameMacro.self
     ]
 }

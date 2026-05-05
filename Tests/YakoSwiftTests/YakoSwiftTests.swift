@@ -32,30 +32,6 @@ final class YakoMacroTests: XCTestCase {
         )
     }
     
-    func testDefaultInit() throws {
-        assertMacroExpansion(
-            """
-            @DefaultInit
-            struct User {
-                var name: String
-                let age: Int
-            }
-            """,
-            expandedSource: """
-            struct User {
-                var name: String
-                let age: Int
-
-                public init(name: String, age: Int) {
-                    self.name = name
-                    self.age = age
-                }
-            }
-            """,
-            macros: testYakupMacros
-        )
-    }
-    
     func testMacro() throws {
         #if canImport(YakoMacroMacros)
         assertMacroExpansion(

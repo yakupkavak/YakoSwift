@@ -13,6 +13,13 @@ public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "Y
 @freestanding(expression)
 public macro raichu(_ count: Int) -> (String) = #externalMacro(module: "YakoSwiftMacros", type: "RaichuMacro")
 
+///Container name yazdırır.
+@freestanding(expression)
+public macro containerName() -> (String) = #externalMacro(module: "YakoSwiftMacros", type: "ContainerNameMacro")
+
+@freestanding(expression)
+public macro debugMacroNodeContext(_ items: Any...) -> String = #externalMacro(module: "YakoSwiftMacros", type: "DebugNodeContextMacro")
+
 /// Kanka haberin olsun sadece init fonksiyonu üreteceğiz diyoruz burada.
 @attached(member, names: named(init))
 public macro DefaultInit() = #externalMacro(module: "YakoSwiftMacros", type: "DefaultInitMacro")
